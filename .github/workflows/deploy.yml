@@ -19,6 +19,7 @@ jobs:
         server: ${{ secrets.FTP_HOST }}
         username: ${{ secrets.FTP_USER }}
         password: ${{ secrets.FTP_PASS }}
+        server-dir: public_html/
         # Evita subir a pasta do git, os arquivos do github actions e os scripts geradores
         exclude: |
           **/.git*
