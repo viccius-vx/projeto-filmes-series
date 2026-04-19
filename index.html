@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La casa de papel - Assistir Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e50914; /* Netflix red */
+            --bg-color: #0b0b0f;
+            --card-bg: rgba(20, 20, 25, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text: #ffffff;
+            --text-muted: #a0a0a5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 0%, #2b0b10 0%, var(--bg-color) 70%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* Title Area */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #ffffff, #a0a0a5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        /* Main Card */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: fadeInUp 0.8s ease 0.2s backwards;
+        }
+
+        /* Player Section */
+        .player-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            position: relative;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .player-placeholder {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            z-index: 1;
+            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%);
+        }
+
+        iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border: none;
+            z-index: 2;
+        }
+
+        /* Content Section */
+        .content-area {
+            padding: 2rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 1rem;
+        }
+        
+
+
+        .tab-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--text);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .tab-btn.active {
+            color: var(--text);
+            background: var(--primary);
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+        }
+
+        /* Episodes Grid */
+        .episodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .episodes-grid.active {
+            display: grid;
+        }
+
+        .episode-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .episode-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .episode-card.playing {
+            border-color: var(--primary);
+            background: rgba(229, 9, 20, 0.1);
+        }
+
+        .ep-number {
+            background: rgba(255,255,255,0.1);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .episode-card.playing .ep-number {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .ep-title {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        /* Server Selector */
+        .server-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+
+        .server-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid var(--card-border);
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .server-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .server-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            padding: 1rem;
+            h1 { font-size: 2rem; }
+            .content-area { padding: 1.5rem; }
+            .episodes-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>La casa de papel</h1>
+            <p class="subtitle">Assista todas as temporadas sem anúncios</p>
+        </header>
+
+        <div class="card">
+
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Season Tabs -->
+                <div class="tabs" id="season-tabs">
+                    <button class="tab-btn active" onclick="showSeason(1)">Temporada 1</button>
+                    <button class="tab-btn" onclick="showSeason(2)">Temporada 2</button>
+                    <button class="tab-btn" onclick="showSeason(3)">Temporada 3</button>
+                    <button class="tab-btn" onclick="showSeason(4)">Temporada 4</button>
+                    <button class="tab-btn" onclick="showSeason(5)">Temporada 5</button>
+                </div>
+
+                <!-- Episodes container will be populated by JS -->
+                <div id="episodes-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Database of episodes mapping to the source ID
+        const data = {
+            1: [15576, 15578, 15580, 15582, 15584, 15586, 15588, 15590, 15592, 15594, 15596, 15598, 15600],
+            2: [282493, 282494, 282495, 282496, 282497, 282498, 282499, 282500, 282501],
+            3: [282502, 57651, 57650, 57649, 57648, 57644, 57646, 57643],
+            4: [282504, 282505, 282506, 282507, 282508, 282509, 282510, 282511],
+            5: [158395, 158394, 158393, 158392, 170220, 170210, 170212, 170214, 170216, 170218]
+        };
+
+        let currentSeason = null;
+        let currentEp = null;
+        let activeServer = 1;
+
+        // Initialize UI
+        function init() {
+            const container = document.getElementById('episodes-container');
+            
+            // Build grids for each season
+            for (let season = 1; season <= 5; season++) {
+                const grid = document.createElement('div');
+                grid.className = `episodes-grid ${season === 1 ? 'active' : ''}`;
+                grid.id = `season-${season}`;
+                
+                data[season].forEach((epId, index) => {
+                    const epNum = index + 1;
+                    const card = document.createElement('div');
+                    card.className = 'episode-card';
+                    card.id = `ep-${season}-${epNum}`;
+                    card.onclick = () => playEpisode(season, epNum, card);
+                    
+                    card.innerHTML = `
+                        <div class="ep-number">${epNum}</div>
+                        <div class="ep-title">Episódio ${epNum}</div>
+                    `;
+                    grid.appendChild(card);
+                });
+                
+                container.appendChild(grid);
+            }
+        }
+
+        // Handle season tab switching
+        function showSeason(seasonNum) {
+            // Update tabs
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach((tab, index) => {
+                if (index + 1 === seasonNum) tab.classList.add('active');
+                else tab.classList.remove('active');
+            });
+
+            // Update grids
+            const grids = document.querySelectorAll('.episodes-grid');
+            grids.forEach(grid => {
+                if (grid.id === `season-${seasonNum}`) grid.classList.add('active');
+                else grid.classList.remove('active');
+            });
+        }
+
+        // Play an episode
+        function playEpisode(seasonNum, epNum, cardElement) {
+            // Animação de clique
+            document.querySelectorAll('.episode-card').forEach(el => el.classList.remove('playing'));
+            if(cardElement) cardElement.classList.add('playing');
+            
+            // Redireciona para a página específica do episódio
+            // Usamos o caminho exato para o index.html dentro da pasta para funcionar localmente
+            window.location.href = `./temp${seasonNum}ep${epNum}/index.html`;
+        }
+
+        // Run on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
